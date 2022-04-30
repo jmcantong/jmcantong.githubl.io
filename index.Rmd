@@ -1,0 +1,238 @@
+--
+title: "Racial Profiling in Vehicular Stops & Outcomes in the City of Los Angeles"
+author: 
+- "Joshua Cantong *(he/them)* | USC Master of Public Policy, Urban Spatial Analysis"
+- "Spatial Econometrics (SSCI 574) - Spring 2022"
+output:
+  html_notebook: default
+  github_document: default
+---
+
+
+## ***Introduction***
+
+Police stops are the milieu of public violence at the hands of a so-called collection of *public servants*. The stop is the milieu––the situational, and relational space––whereby beatings, harassment, and killings are levied upon black folks disproportionately, and predominantly lower-income black folk, in the American Metropolis, as well as its multiplicitous exurbs, and rural lands. Much empirical research with a stream of large administrative data from policing institutions over the last 20-years have confirmed what black folks have known since the early 20th-century (or maybe even since the end of Reconstruction): that policing is an institution which is disproportionately levied upon black beings and black geographies in a way that affects the black being and geography negatively across a variety of accountable domains. Violence is the most visible, grotesque and forceful form of police interaction with low-income communities of color––it’s true that police themselves are the most visible and embodied form of a State that has neglected, disinvested and stigmatized black folks and black geographies throughout history (Wacquant, 2008)––but does the negative stratification involved in the policing institution end at embodied vulnerability and the loss of life entailed in physical violence, or might it extend and coalesce with material and valued forms of inequality? What are the economic impacts of racial profiling in law enforcement stops––and how might that be a part of a larger schema of policing as an apparatus entailed within racial capitalist orderings of difference?
+
+More research over the last decade or so has begun to focus on the economic impacts of stops, and the way that black folks are most likely to be subjected to economic extraction from the hands of the policing institution. How does this work? *Municipal fine farming* is a method that policing institutions use to extract fiscal resources from poor folks, and poor folks of color––it’s a method wherein the city police use their power of levying tickets to raise fiscal resources for a given municipality that’s vying for an expanded budget; as opposed to people being ticketed or cited for actual moving violations, they are instead cited because the State unjustly sanctions them for their race, and uses them as a way to expand the fiscal extent of the local government (Wang, 2018). This current study seeks to extend the literature on the economic violence and racio-ethnic sanctioning entailed in the policing institution, by focusing on the question of how law enforcement stops, citations, and search rates are intertwined in a particular American Metropolis: the City of Los Angeles. 
+
+The research questions for this project are below: 
+
+> Are law enforcement stops and outcomes (eg. citations and searches) clustered in particular communities across Los Angeles? 
+
+> What are the neighborhood factors most associated with these stop and outcome (eg. citation and search) incidences in Los Angeles?
+
+
+##### **Figure I. Shapefile of the City of Los Angeles**
+```{r pressure, echo=FALSE, fig.cap="Shapfile from the City of Los Angeles. Excludes tracts with a population > 500, as well as anomaly tracts that would create outliers in results (LAX, Griffith Park, Dodger Stadium, UCLA, etc.)"}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/la city shapefile.png")
+
+```
+
+
+
+
+
+## ***Background***
+Other studies in the social sciences have sought to quantitatively uncover the racial disparities present across different policing operations: some focus on police killings, some focus on stops and searches, and fewer focus on the economic extraction entailed in disproportionate citation levying (Maksuta, 2021; Meng, 2017; Pierson et al., 2020). In the literature, there have been very few papers that run inferential analysis of policing operations while taking into account the question of space: either through cartographic representation of the spatial distribution of police associated outcomes, or of explicit regression models that account for spatial heterogeneity and spatial dependence. In the literature, it seems as if a couple of the most common methodologies that are used most often––somewhat related to the non-spatial data limitations entailed in most large administrative policing data––in policing research focused on racial disparity, are often the *threshold test* and the *veil of darkness test*. The first test uses hit rates (the rate at which a motorists stopped is found with drugs, contraband or weapons, etc.) aggregated across racial subpopulations, compared to the search rates across aggregated across racial subpopulations, in order to determine whether or not a certain racial subpopulation is searched more relative to their hit rate. This method has been used by the Stanford Open Policing Project in partnership with the Los Angeles Times, in a study that had a large impact on the public and political spaces’ perception of policing practices in Los Angeles, in the second decade of the 20th century (Poston, Chang, 2019). 
+
+The next method mentioned is the veil of darkness test; this test is used often in criminal legal studies because it’s the most populat causal test to determine racial profiling in law enforcement stop practices (Racial and Identity Profiling Advisory Board, 2019). The test essentially compares stop rates across racial subpopulations in a given time span before sundown, to the stop rates for the associated racial subpopulations after sundown; with the goal of identifying whether the lack of sunlight might serve as some natural exogenous factor that might lead to a reduction in racial profiling, and thereby express different in stop rates across racial subpopulations that are revealed with differences or imbalances in stop rates both internal-temporally (within a given racial subpopulation) and also imbalances in comparison (across a set of given racial subpopulations). The assumption with the veil of darkness is that an officer cannot determine the race of a driver after sundown; this assumption may be hard to establish. Moreover, the test is also aspatial and aggregated stop rates by racial subpopulation not taking into account the area of the city where the stops occurred, and what the neighborhood conditions were of the stops that occurred––this test assumes that an officer wouldn’t expect or assume a driver in a perceptively poor car in a predominantly black area to be a black driver, merely because the sun has gone down. This is a strong assumption and it might be noted that the veil of darkness test demands a series of assumptions that are hard to hold within reality––this may especially be the case with smaller datasets that don’t have a large enough sample size to average out the results across geographies and across time. This study express an overview of these tests in order to lay out what the field has commonly done when examining racial profiling in law enforcement stops, and to express some of their limitations. 
+
+There are three papers that this work builds upon. The first is a study of policing killings using spatial regression models, the next is a study analyzing stop and search rates using a panel data set with descriptive and cartographic analyses, and the last is a study which analyzes 20M stops in the United States and uses the veil of darkness and threshold tests to determine racial disparity in law enforcement stops and searches. 
+
+The first is a paper from Maksuta (2021) which uses data from the Mapping Police Violence (MPV) database, which has around 10K recorded police killings in the United States using crowdsourced data from folks on the ground. This is important because police don’t accurately record data on the people they kill, and so if any research relies on the internal records from policing institutions to inquire about these killings, then the quality of the data itself would prevent a real analysis of racial disparity and geographic disparity in police killings. While this is an article whose dependent variable is distinct from the one entailed in this paper––the author examines police killings aggregated at the county level across the entire country, while the current paper examines police stop rates, citation rates, and search rates aggregated at the census tract level in a single city––there is still an overlap both with methodology as well as with the domain of interest. The author uses a Spatial Durbin Model (SDM), which takes into account both spatial dependence of the dependent variable, while also taking into account spatial dependence which is related to the independent variables included in a model (or a subset of independent variables included in the model). In the work, the author describes the relative benefit of utilizing spatial econometric models for regional analysis for this purpose, because the basic Ordinary Least Squares (OLS) model, or other models––negative binomial, for instance––may use regional or geographic units while breaking the assumptions of random association due to spatial autocorrelation, which would bias, or at the very least be ‘inappropriate’ for the model estimation. In regard to their findings, the author noted that police-involved homicides (PIH) are positively associated with a county’s concentrated disadvantage and Gini coefficient (a metric of economic inequality), while also being related (indirectly) to the crime rate of the respective county. This study is important because it uncovers the fact that police killings have a very intensive relationship with disadvantaged geographies. While the study is broad in its scope, the study may have been benefited by running multi-level linear regressions that would have taken into account the police killing rates of cities within counties, or of regions of the United States as compared to others. This would have allowed the paper to be more granular in its analysis of the internal heterogeneity that is present within counties, which are quite a large spatial unit to be used to analyze disparity in police killings.  
+
+The next paper that this study builds off of is a study by Meng (2017) which uses data from the Toronto Police Service to investigate racial disparity in stops and searches. The author uses Toronto, Canada, as a region of their analysis, and they utilize a dataset that extends over a decade. While this article doesn’t necessarily examine policing through a lens that incorporates a regression-based spatial analysis (SLM, SEM, SDM, etc.), the author does generate their work through a spatial frame. They run descriptive statistics that point towards disparate ratios of stop rates for black and white youth in the city, and then they also note the clustering of this disparity in particular geographies in their site of study. Their findings, as hinted towards prior, establishes that police disproportionately direct their forces against black youth (ie. go about performing racial profiling instances), and that this performance is directed disproportionately in areas that have higher white populations and areas that have higher crime rates. The authors point towards the need for a greater democratization of data, regular administrative review based on stop data, and community policing. While the latter recommendation may be specious, and generated in a pre-Floyd framing centered in the feasibility or hope within police reformism, this work is noted generally for its spatial framing and focus on disaggregating the impact of policing in an age-universalized context, and specifically focusing on how racially targeted police practices impact youth in lower-income communities of color. 
+
+The last article that this study mentions is probably the most expansive analysis of racial profiling and disaprity in police interactions with civilians in law enforcement stops, and the paper came out of the NYU Center for Urban Science and Progress (CUSP), as well as the Stanford Open Policing Project (OPP) (Pierson et al., 2020). The paper used the aforementioned aspatial methods used to determine racial profiling in stops and searches: respectively the veil of darkness test and the threshold tests. In an analysis of 100M stops in the United States over nearly 10-years, the authors found that black folks were less likely to be stopped after sunset––leading to the implication that officers are less likely to stop drivers and racially profile them due to merely the loss of information caused by reduction in perceiving race at night, and alternatively, more likely to stop black drivers disproportionately due to the means of perceiving their race. In their words: “We found that black drivers were less likely to be stopped after sunset, when a ‘veil of darkness’ masks one’s race, suggesting bias in stop decisions” (Pierson et al., 2020). Furthermore, their veil of darkness tests also found that there was a lower standard of vehicular or person searches for black and latinx drivers. This essentially means that although black and latinx drivers have similar hit rates (rates at which drugs or contraband are found in the process of the search) to white folks, but they have significantly higher search rates, equating to an inequality in the degree to which police levy their search power unjustly upon these populations. This study is very importance because of the ambition of its scope: policing data has been infamously sparse across the nation due to the way in which policing institutions have been historically disinclined at collecting and publishing accurate data on their racial targeting practices––this study not merely collects data from across the nation, but it also collects a panel data set which includes almost a decade of data. A limitation with this study is that it doesn’t analyze the problem of policing and racial profiling through a spatial frame, even though we know that policing institutions use mapping platforms and technologies to orient the way they deploy their resources in racio-geographically disparate ways, and even though we know that therefore police practices have forms of inequality that relate to particular beings and bodies, but also communities and racial geographies. 
+
+In light of this broad literature, with its commensurate and extant limitations, this study seeks to make a small contribution to the study of police practices and racially disparate effects by analyzing the interrelation with stops, citations and searches, in a way that prioritizes an analysis that centers the importance of the material-economic effects associated with racial profiling, while also addressing the question of space in a robust manner. 
+
+
+## ***Data***
+Our dataset is made up from three predominant sources: I) California Public Records Act (PRA) request data from the Los Angeles Police Department (LAPD) for law enforcement stop data in 2019 with additional addresses included, which allowed this study to geocode and run spatial processes on the data (It’s important to note that this work was supported by SPUR, a research institute in California’s Bay Area, and that this work is a partial but limited product of a larger separate practicum assignment conducted for SPUR, in part of USC’s Master of Public Policy program.) (Public Records Request City of Los Angeles, 2019); II) a range of socio-demographic and socio-economic variables tied to census tracts which come from the U.S. Census Bureau’s American Community Survey 5-Year Estimates––these variables are listed in Table I below, but include racial demographics, income inequality, gender demographics, poverty, and tenure type; and III) a shapefile for the City of Los Angeles which was taken from the LA Open Data Portal.   
+
+The study dropped census tracts that had a limited population size (x < 500) or other anomalies, because these outlier calculations would’ve skewed regression results in the calculation of the varied law enforcement outcome dependent variables utilized in this study. Some examples of census tracts that were dropped included those which held UCLA, LAX, Griffith Park and the LA Dodgers Stadium (Collins, Stuart, Janulis, 2022). In taking a larger step back, there were ~709k stops that the Los Angeles Police Department conducted in 2019. The present analysis was able to successfully geocode ~690k stops. In further limiting the data, we removed stops that lied outside of the LAPD census tracts, outside of the previously subsetted census tracts, stops that were associated with any form of stop other than a vehicular stop, and stops that were repeats of the same stop instance but a recording of additional persons in the same vehicle. Following this process, the final dataset was limited to ~570k stops. At this point, we aggregated the number of stops by census tracts, and then calculated our rates.
+
+In order to ensure that our variables were ready for analysis, we had to log transform our dependent variables: stop rate, citation rate and search rate. Before the log transformation, the data was significantly right skewed. After transformation, the variables were more normally distributed and ready for incorporation into regression models. 
+
+##### **Table I. Information on Variables Included in Regression Models**
+```{r, echo=FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/variable table.png")
+
+```
+
+
+
+## ***Methodology***
+This research has three segments or three methods which are utilized in order to triangulate and answers our two research questions: I) aggregate visualizations examining law enforcement rates by racial subpopulations in the City of Los Angeles, II) Getis-Ord Gi* Hot Spot analyses across the City of Los Angeles, and III) Spatial Lag Models (SLM) across our dependent variables. The first method consists of generating aggregate law enforcement rates by racial subpopulation to find general nonspatial disparity in representation in law enforcement outcomes accounting for population size, the second method is to conduct Getis-Ord Gi* Hot Spot Analyses to find clustering of certain law enforcement outcomes across the City of Los Angeles, and the third method is to utilize a spatial regression approach to fine the ‘neighborhood’ level factors that are most associated with law enforcement outcomes––while accounting for spatial dependence which could make our models biased or inaccurate under the scenario that we fail to account for them. The following segments will quickly review the hot spot analyses and the spatial lag models. 
+
+##### *Getis-Ord Gi* Hot Spot Analysis* 
+This study runs Getis-Ord Gi* hot spot analyses across different geographic regions, in order to determine where exactly law enforcement stops, citations, and searches are predominantly spatially concentrated across our jurisdiction. The Gi* method is a local measure of spatial autocorrelation method which determines whether or not there is clustering of low or high values across the site of study. The process essentially transforms the value of interest into a z-score and then, using the spatial weights matrix, determines whether or not there is local spatial clustering of higher or lower values, as compared to the aggregate mean. The equation for this process is established below, taken from Livings, Wu (2020): 
+
+> #### **Model I.** *Getis-Ord Gi* Model for Stops, Citations and Search Neighborhood Clustering*
+
+```{r, echo=FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/getis-ord model formula.png")
+
+```
+
+
+
+The hot spot analysis then determines whether or not there are hot spots or cold spots within the region. Moreover, this process returns valid results that can be hypothesis tested through a utilization of the z-scores and p-values (Livings, Wu, 2020). The final product of the hot spot analysis is then a visualization of the hot spots and cold spots associated with a given value, at varying different shades which correlate to their representation within the standard confidence interval range. 
+
+
+
+##### *Spatial Lag Models* 
+Next, we’re interested in finding the associations between different neighborhood level factors and the stop, citation and search rates across our geographies of interest. In deploying the Spatial Lag Model (SLM), we control for spatial autocorrelation of the dependent variable within space. In order to carry out this regression, we create W, a spatial weights matrix of the neighborhood structure of our given geographies of interest, and we also include p, which is a weight for the dependent variable or error term’s impact on a given geographic units’ outcome values (Getis, 2009). The spatial weights matrix we construct is specifically a first order Rook’s contiguity formation that is row standardized, which marks a given areal unit a weight of 1 if its borders is touching with another areal unit, and then marks a given areal unit a weight of 0 if it doesn’t share the aforementioned first order contiguity. We account for spatial dependence in this instance, because the literature has shown that law enforcement stops, and police killings, are geographically concentrated in some communities, and not in others. Policing is deployed using spatial technologies, and so accounting for that direct spatial application of police resources allows for the accounting of such spatial concentrations and produces more accurate coefficients. The standard Ordinary Least Squares (OLS) model is often made inefficient or biased in the presence of spatial autocorrelation, due to the violation of the Independent Unit Assumption. In accounting for the violation of the independent unit assumption, this model more readily and accurately accounts for the neighborhood level dynamics which are most related to the classification of stops, citations and searches, and the neighborhood level factors that are associated with their occurrence. In the following mathematical representation, the Spatial Lag Model(s) are estimated across census tracts in the City of Los Angeles (Lesage, Pace, 2009): 
+
+> #### **Model II.** *Spatial Lag Model(s) for Stop & Citation Neighborhood Associations* 
+
+```{r, echo=FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/spatial lag model formula.png")
+
+```
+
+
+
+where y denotes the dependent variables (stop rate and citation rate), α denotes a constant, Xβ denotes a vector of explanatory variables, ρWy denotes the spatial weights matrix and the lagged dependent variable, and ε denotes the error term, which is independent but not normally distributed through space (Lesage, Pace, 2009; Chi, Zhu, 2019). The benefits of the SLM is that it accounts for the way in which geographic units are spatially dependent, which is a problem of using regression models that don’t account for the spatial interactions often associated with regional data (Elhorst, 2010). Due to the fact that the spatially lagged dependent variable––or the weighted average of a given geographic units’ neighboring dependent variable values––cannot merely be interpreted as another independent variable in the model, and the fact that its inclusion into the model makes interpretation of the explanatory variable coefficients more complex, it is necessary to run an impact analysis.
+
+In regards to diagnostics more generally, the research process also takes into account the problems of heteroskedasticity, multicollinearity, and spatial dependence of the residuals. Heteroskedasticity was tested for using the Breusch-Pagan test. The study failed to reject the Null hypothesis of homoskedasticity. Multicollinearity was accounted for using the VIF tests, and specifically noting VIFs > 5. To avoid multi-collinearity, this model dropped bachelor's degree or higher % from the models, and therefore from the entire dataset, as it isn’t included here or in Table I in the Data section. The research also tested for spatial dependence of the model residuals using the Monte-Carlo Moran’s I tests (N = 1,000) on the residuals from the initial and exploratory Ordinary Least Squares (OLS) models, and following the incorporation of the Spatial Lag Models (SLM), the residuals were retested using the Monte-Carlo Moran’s I. The OLS models suffered from positive spatial dependence of the residuals at a statistically significant level, while the SLM models showed no evidence of negative or positive spatial autocorrelation. 
+
+
+## ***Results***
+Aggregates of Various Law Enforcement Rates by Population   
+To begin, the study presents the aggregate visualization of law enforcement stop rates, citations and searches across the City of Los Angeles. The visualization specifically represents the law enforcement outcome by 10,000 residents across Black, Latinx, White and Asian motorists. They rate was calculated by findings the total number of stopped, cited, and searched drivers that were able to be geocoded and spatially joined to the included census tracts within the site of study, divided by the aggregation of racial subpopulations across the included census tracts within the site of study. The data comes from 1-year of data, and it’s limited to census tracts with a population > 500, and excluding census tracts such as UCLA, Griffith Park, LAX and Dodgers Stadium.
+
+##### **Figure II. Aggregate Law Enforcement Outcome Rates by Racial Subpopulations in Los Angeles**
+```{r, echo = FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/aggregate rate visualization.png")
+
+```
+
+
+The largest finding is that Black folks are most overpoliced and far more overpoliced than other racial populations across the city, and that Latinx drivers are also more likely to be stopped and searched relative to White and Asian folks. Specifically, this analysis reveals that Black folks are 4x more likely to be stopped, 3x more likely to be cited, and 12x more likely to be searched than White people, relative to their population size. On the other hand, Latinx folks are 1.4x more likely to be stopped, and 3x more likely to be searched than White people, relative to their population size. On the other hand, White and Asian drivers are least policed across the law enforcement outcomes present in this analysis: stop rates, citation rates and search rates. 
+
+For the purpose of this study, this visualization reveals the sharp racial disparity across law enforcement outcomes. Specifically, though, this work reveals the way in which racial profiling in law enforcement outcomes related to a higher degree of citations––or ticketting––of Black folks. Racial profiling in stops upstream, wherein Black folks are 4x overrepresented in stops compared to White folks, is related to a higher degree of citations for Black folks. Next, this study will examine the geographic concentration of law enforcement outcomes in the City of Los Angeles. 
+
+
+##### Getis-Ord Gi* Hot Spot Analysis 
+In utilizing the Gi* methods, it’s possible to display pockets of high degrees or low degree of law enforcement outcomes across the City of Los Angeles. The previous visualization displayed the racial disparity across racial subpopulations, but didn’t address the factor of where those outcomes were concentrated in the city, related to the racio-demographic context of the city. Below, we visualize both the racial demographic distribution across the City of Los Angeles, as well as Gi* hot spot maps across the three law enforcement outcomes included in the study. 
+
+##### **Figure III. Racio-Demographic Distribution in the City of Los Angeles**
+```{r, echo = FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/demographic distribution visualization.png")
+
+```
+
+
+##### **Figure IV. Hot Spot Analysis of Law Enforcement Outcomes in the City of Los Angeles**
+```{r, echo = FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/hot spot analysis visualization.png")
+
+```
+
+
+The largest findings from this analysis is that high search rates are clustered in South LA, which is a predominantly Black and Latinx geography; after this, stop rates seem to be clustered somewhat in South LA, and citations seem to have the fewest hot spots in South LA. Across all hot Gi* maps, there seems to be hot spots in the DTLA area, which may be related to the higher population in that region of the city. Moreover, the maps find that there are significant cold spots in search rates in West Los Angeles and parts of the western segment of the San Fernando Valley. What the search rate map demonstrates is that while predominantly poor and Black/Latinx South LA has a huge segment of its terrain marked by hot spots for search rates, the predominantly affluent and White West LA has cold spots for searches. While citations don’t seem to be clustered within South LA, they are clustered in areas like DTLA, Central LA (Harvard Heights and Pico-Union), as well as in Venice, Hollywood, Beverly Grove, and Fairfax (uncovered by the researcher using OpenStreetsMap as a interactive leaflet map underneath the Gi* maps). 
+
+##### *Spatial Lag Models* 
+Lastly, this paper is interested in finding the associations between different neighborhood level factors and the stop, citation and search rates across Los Angeles. The regression table for the Spatial Lag Models (SLMs) are below, as well as their impacts which demonstrate the direct, indirect and total effects for each independent variable. (The direct and indirect effect effect numbers record whether the coefficient of a given variable is more associated with neighboring geographic units’ independent values [or indirect effects], or the reference geographic unit’s values [or direct effects]). Lasage & Pace (2009) note that including impacts are important for interpreting the coefficients of models such as the Spatial Durbin Model (SDM) and the Spatial Lag Model (SLM)––and that failing to do so might otherwise results in a misinterpretation of the coefficients of the variables of interest in one’s regression model(s). 
+
+##### **Table II. Spatial Lag Regressions for Law Enforcement Outcomes in the City of Los Angeles**
+```{r, echo = FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/spatial lag model table.png")
+
+```
+
+
+##### **Table III. Impacts for Stop Rate SLM in the City of Los Angeles**
+```{r, echo = FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/stop rate impact table.png")
+
+```
+
+
+##### **Table IV. Impacts for Citation Rate SLM in the City of Los Angeles**
+```{r, echo = FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/citation rate impact table.png")
+
+```
+
+
+##### **Table V. Impacts for Search Rate SLM in the City of Los Angeles**
+```{r, echo = FALSE}
+
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/search rate impact table.png")
+
+```
+
+
+The largest finding from these results is that there are positive associations for Black and Latinx populations across stops and searches. This means that as a census tracts’ share or Black residents increases, or as a census tracts’ share of Latinx residents increases, there is an increase in the rate of residents stopped, as well as an increase in the rate of residents searched––controlling for other variables. Furthermore, the analysis reveals that poverty rate is also positively associated with all three law enforcement rates included in the study. There are, furthermore, negative associations with the women population share of a tract, as well as the renter household share of a tract.
+
+The impact analysis reveals the direct effects and indirect effects entailed across our independent variables. The impact results for stops and citations leads to an interesting finding: while there is a negative association with renter household share and stop rate and citation rate, it appears that this negative association is due to the indirect effect of the average share of census tracts’ around an individual geography. How does this work in practice? We might read it as such: the negative association with renter household share and stop/citation rates are related to a given tract’s neighbors and their share of renter households, and not necessarily strongly related to the renter household share of a reference tract. It seems that there’s an indirect suppressive effect related to renter household share––at least when controlling for other variables. Another interesting findings is related to how the direct and indirect effects of poverty rate change across the citation and search rate models. While both models have a positive association with poverty rate, it appears that citation rates have a large indirect effect, while poverty rate has a large direct effect. 
+
+In turning to the Akaike Information Criterion (AIC) analysis, which allows us to see the goodness of fit across our different models, or the degree to which a model describes the actual data generating process, it’s apparent that the search model is the most predictive, while the stop and citation models trail in their efficacy. The AIC for the search rate model is 2,085; the AIC for the stop rate model is 2,380; and the AIC for the citation rate model is 2,828. Another factor related to evaluating these AICs is that the different dependent variable may hinder the use of the AIC to compare across the models, but in running OLS models prior to the Spatial Lag Models and observing the relative different of adjusted R^2, it seems that the level of fit across models carries over with the AIC figures. Why might the search model be more predictive while the citation model may be less predictive? If this result is viewed in context with the Getis-Ord Gi* analysis, then we might understand the difference of fit across these dependent variables. The search rate hot spot analysis showed a strong clustering of hot spots in South LA, which is a Black-Latinx geography; on the other hand, the citation rate model showed very minimal and the least amount of clustering across the whole city, in relation to the other dependent variable maps. While we know that racial profiling occurs and impacts Black drivers predominantly, and Latinx drivers significantly as well––these findings allow us to see that citation disparity may have a larger disparity at the level of the individual/body, and not at the geographic aggregate. On the other hand, our findings reveal that search rates have both a disparity at the scale of the individual, as well as a disparity at the scale of the geographic aggregate. 
+
+(as noted in the methods section, these models accounted for multicollinearity, heteroskedasticity, and the spatial dependence of the residuals from prior nonspatial regressions.)
+
+## ***Discussion***
+What are the implications for this research? First, this research points towards racial disparities across all three of the dependent variables of interest: (vehicular) stops, citations and searches. The analysis also uncovered that stops and searches are positively associated with the share of black and latinx residents of an area. Lastly, we uncovered that while disparities in searches occur at the level of the body and the geographic aggregate, we found that disparities in citations occur especially at the level of the body but not necessarily at the level of the geographic aggregate (or minimally so at this level of aggregation). More so, this research focuses especially on the relation between these variables, but also especially how law enforcement stops generate an undue economic burden on Black residents due to fine farming, or the disparate levying of tickets on Black motorists caused by racial profiling. While these findings are novel, their implications are even more significant. In this particular historical context, following the police killings of Black folks in the last decade and in relation to the Black Lives Matter movement, this work points towards the ways in which law enforcement institutions don’t secure public safety as much as they work to secure racial differences, violence, and economic sanctions in low-income communities and upon low-income bodies of color. 
+    
+The research can be expanded with future work. First, the study only contains one year of data––so future work should expand this analysis to multiple years, potentially even using spatial panel sets to make the findings more robust. Second, these findings are contingent on the validity of the methods in which law enforcement officers record valid data that are in line with the standards of the Racial and Identity Profiling Act (RIPA) of 2015. In connection with this, it must be remembered that the racial classifications of drivers which this study relies on, is contingent on the perceptions of officers and how they record drivers. Third, we geocoded ~670k stops but our conversation success rate was only somewhere in the 80-85% range––future research should improve cleaning of addresses and geocoding technology in order to increase the success rate of geocoding. Fourth, when referring to the preliminary OLS models, we find that the adjusted R^2 values were either moderate or low for stops (~.25) and citations (~.13). Future models should include more omitted variables, like dummy variables for highways intersecting with particular tracts, or interaction with highway intersections and a larger population of black and latinx residents. 
+
+
+
+## ***Conclusion***
+This research answered the research questions first framed at the beginning of this work. They are as follows: I) Are law enforcement stops and outcomes (eg. citations and searches) clustered in particular communities across Los Angeles? , and II) What are the neighborhood factors most associated with these stop and outcome (eg. citation and search) incidences in Los Angeles? The answer to the first question is that all outcomes are clustered generally in downtown Los Angeles (DTLA) as well as Hollywood and Venice more generally; moreover, searches are particularly clustered in South LA, which is a predominantly Black-Latinx geography. The answer to the second question is that poverty, latinx population share of the area, and black population share of the area is most positively associated with the three different law enforcement stops, and then women population share of the area and renter household share of the area are negatively associated with the law enforcement outcomes analyzed in this study (stops, citations and searches). 
+
+This study reveals that law enforcement and traffic enforcement are a vector for inequality. Black and Latinx drivers are most subjected to very large disparities in stops and searches that are caused by racial profiling. Moreover, Black drivers specifically are subjected disproportionately to large disparities in citation rates, which can be viewed as a negative economic sanction that impacts a population that is less affluent. Previous studies have lifted up the importance of viewing police as a form of State violence (Wacquant, 2008; Wang, 2018), and this study contributes to that literature, pointing towards the interrelation of stops, citation and searches, and the material-economic disparities entailed in the search process.  
+
+
+## ***References***
+Chi, G., Zhu, J. (2019). *Spatial Regression Models for the Social Sciences*. Thousand Oaks, CA: SAGE Publications.
+
+Collins, C., Stuart, F., & Janulis, P. (2022). Policing gentrification or policing displacement? Testing the relationship between order maintenance policing and neighbourhood change in Los Angeles. *Urban Studies* (Edinburgh, Scotland), 59(2), 414–433. https://doi.org/10.1177/0042098021993354
+
+Elhorst, J.P. 2010. “Applied spatial econometrics: Raising the bar.” *Spatial Economic Analysis*, 5(1): 9-28.
+
+Getis, A. (2009). “Spatial Weights Matrices.” *Geographical Analysis*, 41(4), 404-410.
+
+LeSage, J.P., and R.K. Pace. (2009). *Introduction to Spatial Econometrics*. Boca Raton, FL: CRC Press.
+
+Livings, M. and A. Wu, 2020. “Local measures of spatial association.” *The Geographic Information Science & Technology Body of Knowledge* (3rd Quarter 2020 Edition), John P. Wilson (Ed.)
+
+Maksuta, K. D. (2021). Exploring Group-Threat and Police-Involved Homicide: A Spatial Analysis of Police Involved Homicide in US Counties (Order No. 28649886). *ProQuest Dissertations & Theses Global; ProQuest One Academic*. https://www.proquest.com/docview/2571026761?fromopenview=true&parentSessionId=zNaWvQmxtNda0OUIgd6l7UXbGn3JWBKqZ84lralz%2FiM%3D&pq-origsite=gscholar&accountid=14749
+
+Meng, Y. (2017). Profiling Minorities: Police Stop and Search Practices in Toronto, Canada. *Human Geographies*, 11(1), 5-23. doi http://dx.doi.org/10.5719/hgeo.2017.111.1
+
+Pierson, E., Simoiu, C., Overgoor, J., Corbett-Davies, S., Jenson, D., Shoemaker, A., Ramachandran, V., Barghouty, P., Phillips, C., Shroff, R., & Goel, S. (2020). A large-scale analysis of racial disparities in police stops across the United States. *Nature Human Behaviour*, 4(7), 736–745. https://doi.org/10.1038/s41562-020-0858-1
+
+Poston, B., Chang, C. (2019). LAPD searches blacks and Latinos more. But they’re less likely to have contraband than whites. *The Los Angeles Times*. https://www.latimes.com/local/lanow/ la-me-lapd-searches-20190605-story.html
+
+Public Records Request City of Los Angeles. (2019) Request #19-7467. https://lacity.nextrequest.com/requests/19-7467
+
+Racial and Identity Profiling Advisory Board. (2019). Annual Report 2019. https://oag.ca.gov/sites/all/files/agweb/pdfs/ripa/ripa-board-report-2019.pdf
+
+Ross, C. T. (2015). A multi-level Bayesian analysis of racial Bias in police shootings at the county-level in the United States, 2011-2014. *PloS One*, 10(11), e0141854–e0141854. https://doi.org/10.1371/journal.pone.0141854
+
+Wacquant, L. (2008). *Urban Outcasts: A Comparative Sociology of Advanced Marginality*. Polity Press. 
+
+Wang, J. (2018). *Carceral Capitalism*. Semiotexte. 
+
+
+
+
+
+
+
+
+
