@@ -154,7 +154,7 @@ knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI
 ##### **Table III. Impacts for Stop Rate SLM in the City of Los Angeles**
 ```{r, echo = FALSE}
 
-knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/stop rate impact table.png")
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/stop rate impact table_v2.png")
 
 ```
 
@@ -162,7 +162,7 @@ knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI
 ##### **Table IV. Impacts for Citation Rate SLM in the City of Los Angeles**
 ```{r, echo = FALSE}
 
-knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/citation rate impact table.png")
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/citation rate impact table_v2.png")
 
 ```
 
@@ -170,7 +170,7 @@ knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI
 ##### **Table V. Impacts for Search Rate SLM in the City of Los Angeles**
 ```{r, echo = FALSE}
 
-knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/search rate impact table.png")
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/search rate impact table_v2.png")
 
 ```
 
