@@ -24,7 +24,7 @@ The research questions for this project are below:
 ##### **Figure I. Shapefile of the City of Los Angeles**
 ```{r pressure, echo=FALSE, fig.cap="Shapfile of the City of Los Angeles. Excludes tracts with a population greater than 500, as well as anomaly tracts that would create outliers in results (ie. LAX, Griffith Park, Dodger Stadium, UCLA)"}
 
-knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/la city shapefile.png")
+knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI 574/Programming/Results/City of Los Angeles Study Shapefile.png")
 
 ```
 
