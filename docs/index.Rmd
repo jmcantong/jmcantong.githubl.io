@@ -67,10 +67,10 @@ knitr::include_graphics("/Users/joshuacantong/Desktop/Academics/Spring 2022/SSCI
 ## ***Methodology***
 This research has three segments or three methods which are utilized in order to triangulate and answers our two research questions: I) aggregate visualizations examining law enforcement rates by racial subpopulations in the City of Los Angeles, II) Getis-Ord Gi* Hot Spot analyses across the City of Los Angeles, and III) Spatial Lag Models (SLM) across our dependent variables. The first method consists of generating aggregate law enforcement rates by racial subpopulation to find general nonspatial disparity in representation in law enforcement outcomes accounting for population size, the second method is to conduct Getis-Ord Gi* Hot Spot Analyses to find clustering of certain law enforcement outcomes across the City of Los Angeles, and the third method is to utilize a spatial regression approach to find the ‘neighborhood’ level factors that are most associated with law enforcement outcomes––while accounting for spatial dependence which could make our models biased or inaccurate under the scenario that we fail to account for them. The following segments will quickly review the hot spot analyses and the spatial lag models. 
 
-##### *Getis-Ord Gi* Hot Spot Analysis* 
+##### _Getis-Ord Gi* Hot Spot Analysis_ 
 This study runs Getis-Ord Gi* hot spot analyses across different geographic regions, in order to determine where exactly law enforcement stops, citations, and searches are predominantly spatially concentrated across our jurisdiction. The Gi* method is a local measure of spatial autocorrelation method which determines whether or not there is clustering of low or high values across the site of study. The process essentially transforms the value of interest into a z-score and then, using the spatial weights matrix, determines whether or not there is local spatial clustering of higher or lower values, as compared to the aggregate mean. The equation for this process is established below, taken from Livings, Wu (2020): 
 
-> #### **Model I.** *Getis-Ord Gi* Model for Stops, Citations and Search Neighborhood Clustering*
+> #### **Model I.** _Getis-Ord Gi* Model for Stops, Citations and Search Neighborhood Clustering_
 
 ```{r, echo=FALSE}
 
